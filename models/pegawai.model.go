@@ -72,3 +72,33 @@ func StorePegawai(nama, alamat, telepon string) (Response, error) {
 
 	return res, nil
 }
+
+func UpdatePegawai(id int, nama, alamat, telepon string) (Response, error) {
+	var res Response
+	con := db.CreateCon()
+
+	sqlStatement := "UPDATE pegawai SET nama = ?, alamat = ?, telepon = ? WHERE id = ?"
+
+	stmt, err := con.Prepare(sqlStatement)
+	if err != nil {
+		return res, err
+	}
+
+	result, err := stmt.Exec(nama, alamat, telepon, id)
+	if err != nil {
+		return res, nil
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return res, nil
+	}
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = map[string]int64{
+		"rows_affected": rowsAffected,
+	}
+
+	return res, nil
+}
