@@ -65,7 +65,7 @@ func StorePegawai(nama, alamat, telepon string) (Response, error) {
 	}
 
 	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Message = "Insert Data Success"
 	res.Data = map[string]int64{
 		"lastInsertedId": lastInsertedId,
 	}
@@ -86,16 +86,46 @@ func UpdatePegawai(id int, nama, alamat, telepon string) (Response, error) {
 
 	result, err := stmt.Exec(nama, alamat, telepon, id)
 	if err != nil {
-		return res, nil
+		return res, err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return res, nil
+		return res, err
 	}
 
 	res.Status = http.StatusOK
-	res.Message = "Success"
+	res.Message = "Update Data Success"
+	res.Data = map[string]int64{
+		"rows_affected": rowsAffected,
+	}
+
+	return res, nil
+}
+
+func DeletePegawai(id int) (Response, error) {
+	var res Response
+	con := db.CreateCon()
+
+	sqlStatement := "DELETE FROM pegawai WHERE id = ?"
+
+	stmt, err := con.Prepare(sqlStatement)
+	if err != nil {
+		return res, err
+	}
+
+	result, err := stmt.Exec(id)
+	if err != nil {
+		return res, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return res, err
+	}
+
+	res.Status = http.StatusOK
+	res.Message = "Delete Data Success"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
 	}

@@ -17,6 +17,7 @@ func Init() *echo.Echo {
 	e.GET("/pegawai", controllers.FetchAllPegawai)
 	e.POST("/pegawai", controllers.StorePegawai)
 	e.PUT("/pegawai", controllers.UpdatePegawai)
+	e.DELETE("/pegawai", controllers.DeletePegawai)
 
 	return e
 }

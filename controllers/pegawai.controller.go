@@ -41,7 +41,24 @@ func UpdatePegawai(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
+
 	result, err := models.UpdatePegawai(convId, nama, alamat, telepon)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
+func DeletePegawai(c echo.Context) error {
+	id := c.FormValue("id")
+
+	convId, err := strconv.Atoi(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	result, err := models.DeletePegawai(convId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
