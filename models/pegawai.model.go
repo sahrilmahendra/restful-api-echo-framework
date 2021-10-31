@@ -3,13 +3,15 @@ package models
 import (
 	"echo-rest/db"
 	"net/http"
+
+	validator "github.com/go-playground/validator/v10"
 )
 
 type Pegawai struct {
 	Id      int    `json:"id"`
-	Nama    string `json:"nama"`
-	Alamat  string `json:"alamat"`
-	Telepon string `json:"telepon"`
+	Nama    string `json:"nama" validate:"required"`
+	Alamat  string `json:"alamat" validate:"required"`
+	Telepon string `json:"telepon" validate:"required"`
 }
 
 func FetchAllPegawai() (Response, error) {
@@ -45,6 +47,21 @@ func FetchAllPegawai() (Response, error) {
 
 func StorePegawai(nama, alamat, telepon string) (Response, error) {
 	var res Response
+
+	v := validator.New()
+
+	peg := Pegawai{
+		Nama:    nama,
+		Alamat:  alamat,
+		Telepon: telepon,
+	}
+
+	err := v.Struct(peg)
+
+	if err != nil {
+		return res, err
+	}
+
 	con := db.CreateCon()
 
 	sqlStatement := "INSERT pegawai (nama, alamat, telepon) VALUES (?, ?, ?)"
@@ -65,7 +82,7 @@ func StorePegawai(nama, alamat, telepon string) (Response, error) {
 	}
 
 	res.Status = http.StatusOK
-	res.Message = "Insert Data Success"
+	res.Message = "Data Berhasil Ditambahkan"
 	res.Data = map[string]int64{
 		"lastInsertedId": lastInsertedId,
 	}
@@ -75,6 +92,21 @@ func StorePegawai(nama, alamat, telepon string) (Response, error) {
 
 func UpdatePegawai(id int, nama, alamat, telepon string) (Response, error) {
 	var res Response
+
+	v := validator.New()
+
+	peg := Pegawai{
+		Nama:    nama,
+		Alamat:  alamat,
+		Telepon: telepon,
+	}
+
+	err := v.Struct(peg)
+
+	if err != nil {
+		return res, err
+	}
+
 	con := db.CreateCon()
 
 	sqlStatement := "UPDATE pegawai SET nama = ?, alamat = ?, telepon = ? WHERE id = ?"
@@ -95,7 +127,7 @@ func UpdatePegawai(id int, nama, alamat, telepon string) (Response, error) {
 	}
 
 	res.Status = http.StatusOK
-	res.Message = "Update Data Success"
+	res.Message = "Data Berhasil Diubah"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
 	}
@@ -125,7 +157,7 @@ func DeletePegawai(id int) (Response, error) {
 	}
 
 	res.Status = http.StatusOK
-	res.Message = "Delete Data Success"
+	res.Message = "Data Berhasil Dihapus"
 	res.Data = map[string]int64{
 		"rows_affected": rowsAffected,
 	}

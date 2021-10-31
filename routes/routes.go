@@ -16,11 +16,14 @@ func Init() *echo.Echo {
 	})
 
 	e.GET("/pegawai", controllers.FetchAllPegawai, middleware.IsAuthenticated)
-	e.POST("/pegawai", controllers.StorePegawai)
-	e.PUT("/pegawai", controllers.UpdatePegawai)
-	e.DELETE("/pegawai", controllers.DeletePegawai)
+	e.POST("/pegawai", controllers.StorePegawai, middleware.IsAuthenticated)
+	e.PUT("/pegawai", controllers.UpdatePegawai, middleware.IsAuthenticated)
+	e.DELETE("/pegawai", controllers.DeletePegawai, middleware.IsAuthenticated)
 
 	e.GET("/generate-hash/:password", controllers.GenerateHashPassword)
 	e.POST("/login", controllers.CheckLogin)
+
+	e.GET("/test-struct-validation", controllers.TestStructValidation)
+	e.GET("/test-variable-validation", controllers.TestVariableValidation)
 	return e
 }
